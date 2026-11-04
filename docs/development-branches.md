@@ -2,7 +2,7 @@
 
 | 需求 | 原始问题 | 仓库 | 开发分支 | 工作目录 | 状态 |
 |---|---|---|---|---|---|
-| 三源广告规则合并去重与自动订阅 | 用户于 2026-11-04 要求使用 GitHub 托管去重订阅；原始来源为本次对话，无外部工单链接 | ZingYao/clash-ad-rules | zing/feature/deduplicated-ad-subscription | outputs/clash-ad-rules | 已发布并接入手机，复验更新流程中 |
+| 三源广告规则合并去重与自动订阅 | 用户于 2026-11-04 要求使用 GitHub 托管去重订阅；原始来源为本次对话，无外部工单链接 | ZingYao/clash-ad-rules | zing/feature/deduplicated-ad-subscription | outputs/clash-ad-rules | 已交付：自动发布与手机拦截验收通过 |
 
 这是全新空仓库，没有已有功能分支、worktree 或 main/master 基线。首次提交在上述功能分支初始化；完成验证后建立 main 发布基线，不在 main 直接提交业务代码。后续同一需求修正继续复用上述分支。
 
@@ -13,3 +13,5 @@
 首次交付：功能提交 a46ea6d；main 基线与该提交一致。Actions 41791099546 测试及发布成功，Release rules-20261104T071636Z-41791099546-1。手机合并源 zing-ad-union 已加载 270,058 条 MRS，红果、通用及游戏广告命中 REJECT；国内网站 HTTP 200。未 add 的 Go 文件：无。
 
 后续验收修正：沿用原功能分支，将 checkout 升级到固定 SHA 的 v6，消除 Actions 的 Node.js 20 弃用提示，并复验读取上一版及内容不变跳过发布。
+
+最终验收：功能及 CI 提交 63be06a 已快进合并 main。功能分支 Actions 41791496969 通过，main Actions 41791740567 的 test 和 publish 全部成功；发布日志确认 Rules unchanged; keeping the current release，已验证读取上一版及无变化跳过重复发布。手机使用 adsunion.js（16037509.js），单一 zing-ad-union MRS 源每 21,600 秒更新；结束时 VPN 保持连接、原节点选择恢复、虚拟屏与临时转发关闭。未 add 的 Go 文件：无。
