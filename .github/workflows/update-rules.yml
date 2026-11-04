@@ -1,0 +1,63 @@
+name: Update deduplicated ad rules
+
+on:
+  schedule:
+    - cron: '27 */6 * * *'
+  workflow_dispatch:
+  push:
+    branches: [main, zing/feature/deduplicated-ad-subscription]
+    paths:
+      - 'scripts/**'
+      - 'tests/**'
+      - '.github/workflows/**'
+  pull_request:
+    paths:
+      - 'scripts/**'
+      - 'tests/**'
+      - '.github/workflows/**'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ad-rules-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  test:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          persist-credentials: false
+      - run: python3 -m unittest discover -s tests -v
+
+  publish:
+    needs: test
+    if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 12
+    permissions:
+      contents: write
+    env:
+      GH_TOKEN: ${{ github.token }}
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          persist-credentials: false
+      - name: Download pinned Mihomo compiler
+        run: python3 scripts/install_mihomo.py
+      - name: Read previous published statistics
+        run: python3 scripts/download_previous.py
+      - name: Fetch, deduplicate, verify, and compile
+        shell: bash
+        run: |
+          set -euo pipefail
+          args=()
+          if [[ -f previous/stats.json ]]; then
+            args+=(--previous-stats previous/stats.json)
+          fi
+          python3 scripts/merge_rules.py --output build/ads.yaml --mihomo "$PWD/bin/mihomo" "${args[@]}"
+      - name: Publish complete release
+        run: python3 scripts/publish_rules.py
