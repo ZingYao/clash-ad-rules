@@ -61,3 +61,27 @@ jobs:
           python3 scripts/merge_rules.py --output build/ads.yaml --mihomo "$PWD/bin/mihomo" "${args[@]}"
       - name: Publish complete release
         run: python3 scripts/publish_rules.py
+      - name: Publish Shadowrocket download mirror
+        shell: bash
+        run: |
+          set -euo pipefail
+          mirror=$(mktemp -d)
+          trap 'rm -rf "$mirror"' EXIT
+          gh auth setup-git --hostname github.com
+          git -C "$mirror" init --quiet --initial-branch=shadowrocket
+          git -C "$mirror" remote add origin "https://github.com/$GITHUB_REPOSITORY.git"
+          if git -C "$mirror" ls-remote --exit-code --heads origin refs/heads/shadowrocket; then
+            git -C "$mirror" fetch --depth=1 origin refs/heads/shadowrocket
+            git -C "$mirror" reset --hard FETCH_HEAD
+          else
+            status=$?
+            if [[ $status -ne 2 ]]; then exit "$status"; fi
+          fi
+          cp build/ads.list "$mirror/ads.list"
+          sed 's|https://github.com/ZingYao/clash-ad-rules/releases/latest/download/ads.list|https://cdn.jsdelivr.net/gh/ZingYao/clash-ad-rules@shadowrocket/ads.list|' \
+            shadowrocket-adblock.conf > "$mirror/shadowrocket-adblock.conf"
+          git -C "$mirror" add ads.list shadowrocket-adblock.conf
+          if git -C "$mirror" diff --cached --quiet; then exit 0; fi
+          git -C "$mirror" -c user.name='github-actions[bot]' -c user.email='41898282+github-actions[bot]@users.noreply.github.com' \
+            commit --message 'chore: 更新小火箭规则镜像'
+          git -C "$mirror" push origin HEAD:refs/heads/shadowrocket

@@ -37,6 +37,8 @@ Clash Mi 可导入 `clashmi-ad-union.js`，它保留原代理订阅和分流，�
 
 没有代理节点时，可在小火箭底部进入「配置」，点右上角「＋」，粘贴 [直连去广告配置链接](https://raw.githubusercontent.com/ZingYao/clash-ad-rules/main/shadowrocket-adblock.conf) 并下载。点下载好的文件，选择「使用配置」，再到首页将「全局路由」设为「配置」并打开连接开关。配置会拦截命中广告规则的请求，其余请求直连。
 
+如果下载过程中断，可改用 [jsDelivr 镜像配置](https://cdn.jsdelivr.net/gh/ZingYao/clash-ad-rules@shadowrocket/shadowrocket-adblock.conf)。GitHub Actions 将同一份规则同步到 `shadowrocket` 发布分支，镜像配置通过 jsDelivr 直接获取列表。CDN 缓存可能让镜像更新晚于 Release。
+
 在当前配置的 `[Rule]` 中加入下列规则，放在可能先匹配同一域名的分流规则和 `FINAL` 之前。保存后将全局路由设为「配置」。也可以在规则编辑器里选 `RULE-SET`，填写链接并将策略设为 `REJECT`。
 
 ```ini
