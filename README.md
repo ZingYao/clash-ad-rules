@@ -12,7 +12,7 @@ GitHub Actions 每 6 小时尝试更新一次（UTC 00:27、06:27、12:27、18:2
 - 统计与来源哈希：<https://github.com/ZingYao/clash-ad-rules/releases/latest/download/stats.json>
 - 校验和：<https://github.com/ZingYao/clash-ad-rules/releases/latest/download/SHA256SUMS>
 
-这是广告规则源，不包含代理节点，须与自己的代理订阅配合使用。仓库仅包含公开规则和构建代码。
+这些地址提供广告规则。需要代理时可另行添加自己的代理订阅，只做广告拦截时可以使用下方的直连配置。
 
 ## Mihomo 接入
 
@@ -34,6 +34,8 @@ rules:
 Clash Mi 可导入 `clashmi-ad-union.js`，它保留原代理订阅和分流，在前面加入广告拦截，并保留红果补充域名及嗅探设置。先下载文件，再作为 JS 核心覆写导入，追加覆写选择“内置-覆写”。
 
 ## Shadowrocket 接入
+
+没有代理节点时，可在小火箭底部进入「配置」，点右上角「＋」，粘贴 [直连去广告配置链接](https://raw.githubusercontent.com/ZingYao/clash-ad-rules/main/shadowrocket-adblock.conf) 并下载。点下载好的文件，选择「使用配置」，再到首页将「全局路由」设为「配置」并打开连接开关。配置会拦截命中广告规则的请求，其余请求直连。
 
 在当前配置的 `[Rule]` 中加入下列规则，放在可能先匹配同一域名的分流规则和 `FINAL` 之前。保存后将全局路由设为「配置」。也可以在规则编辑器里选 `RULE-SET`，填写链接并将策略设为 `REJECT`。
 

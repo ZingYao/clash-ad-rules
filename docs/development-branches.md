@@ -17,3 +17,5 @@
 最终验收：功能及 CI 提交 63be06a 已快进合并 main。功能分支 Actions 41791496969 通过，main Actions 41791740567 的 test 和 publish 全部成功；发布日志确认 Rules unchanged; keeping the current release，已验证读取上一版及无变化跳过重复发布。手机使用 adsunion.js（16037509.js），单一 zing-ad-union MRS 源每 21,600 秒更新；结束时 VPN 保持连接、原节点选择恢复、虚拟屏与临时转发关闭。未 add 的 Go 文件：无。
 
 2026-11-14 兼容性扩展：用户要求生成小火箭订阅链接，沿用原功能分支。提交 9ca593c 已快进合并 main。功能分支 Actions 43482075819 测试通过，main Actions 43482274785 测试和发布通过。固定 ads.list 链接实测可下载，279,389 条规则和同版 YAML 逐条一致，SHA-256 校验通过。未在 iPhone 上实测。未 add 的 Go 文件：无。
+
+2026-11-14 直连配置：沿用原功能分支，提供 Shadowrocket 可从 URL 新增的配置。命中同一个 ads.list 时拦截，其余直连，使用系统 DNS。配置结构和远程规则地址已校验，iPhone 实机验证待用户导入。未 add 的 Go 文件：无。
