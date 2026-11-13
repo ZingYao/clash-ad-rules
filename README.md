@@ -1,6 +1,6 @@
 # Clash 广告规则合并订阅
 
-自动合并 antiAD、AWAvenue Only Ads、217heidai 三个公开域名库，保留匹配并集，去除完全重复和已被父域覆盖的冗余条目，发布 Mihomo MRS 与可编辑 YAML。
+自动合并 antiAD、AWAvenue Only Ads、217heidai 三个公开域名库，保留匹配并集，去除完全重复和已被父域覆盖的冗余条目，发布 Mihomo MRS、可编辑 YAML 和 Shadowrocket 规则集。
 
 GitHub Actions 每 6 小时尝试更新一次（UTC 00:27、06:27、12:27、18:27），支持手动运行。内容不变时保留当前 Release。
 
@@ -8,6 +8,7 @@ GitHub Actions 每 6 小时尝试更新一次（UTC 00:27、06:27、12:27、18:2
 
 - MRS：<https://github.com/ZingYao/clash-ad-rules/releases/latest/download/ads.mrs>
 - YAML：<https://github.com/ZingYao/clash-ad-rules/releases/latest/download/ads.yaml>
+- Shadowrocket：<https://github.com/ZingYao/clash-ad-rules/releases/latest/download/ads.list>
 - 统计与来源哈希：<https://github.com/ZingYao/clash-ad-rules/releases/latest/download/stats.json>
 - 校验和：<https://github.com/ZingYao/clash-ad-rules/releases/latest/download/SHA256SUMS>
 
@@ -31,6 +32,16 @@ rules:
 ```
 
 Clash Mi 可导入 `clashmi-ad-union.js`，它保留原代理订阅和分流，在前面加入广告拦截，并保留红果补充域名及嗅探设置。先下载文件，再作为 JS 核心覆写导入，追加覆写选择“内置-覆写”。
+
+## Shadowrocket 接入
+
+在当前配置的 `[Rule]` 中加入下列规则，放在可能先匹配同一域名的分流规则和 `FINAL` 之前。保存后将全局路由设为「配置」。也可以在规则编辑器里选 `RULE-SET`，填写链接并将策略设为 `REJECT`。
+
+```ini
+RULE-SET,https://github.com/ZingYao/clash-ad-rules/releases/latest/download/ads.list,REJECT
+```
+
+该列表保留三源合并后的精确域名与后缀匹配。Android 版 Clash Mi 覆写中的红果补充域名和嗅探设置由其覆写脚本管理。
 
 ## 构建与保护
 

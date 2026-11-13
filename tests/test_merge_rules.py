@@ -31,6 +31,13 @@ class MergeRulesTests(unittest.TestCase):
         rules = ["+.b.example.com", "+.example.com", "other.test"]
         self.assertEqual(MERGE.compact(rules), MERGE.compact(list(reversed(rules))))
 
+    def test_shadowrocket_preserves_exact_and_suffix_matching(self):
+        domains, _ = MERGE.compact(["example.com", "+.ads.example.com", "x.ads.example.com"])
+        self.assertEqual(list(MERGE.shadowrocket_rules(domains)), [
+            "DOMAIN-SUFFIX,ads.example.com\n",
+            "DOMAIN,example.com\n",
+        ])
+
     def test_parser_quotes_comments_and_case(self):
         self.assertEqual(MERGE.parse_payload("# source\npayload:\n  - '+.Example.COM'\n  - ads.other.test\n"), ["+.example.com", "ads.other.test"])
 

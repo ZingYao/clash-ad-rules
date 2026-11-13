@@ -84,6 +84,15 @@ def check_counts(sources, output_count, previous=None):
         raise ValueError("合并结果比上一版减少超过 30%，保留上一版")
 
 
+def shadowrocket_rules(domains):
+    """保留精确与后缀匹配，拦截策略由引用此文件的 RULE-SET 指定。"""
+    for domain in domains:
+        if domain.startswith("+."):
+            yield f"DOMAIN-SUFFIX,{domain[2:]}\n"
+        else:
+            yield f"DOMAIN,{domain}\n"
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--output", type=Path, required=True)
@@ -132,6 +141,12 @@ def main():
             pending.append((temporary_mrs, args.output.with_suffix(".mrs")))
         stats["yaml_bytes"] = temporary.stat().st_size
         stats["yaml_sha256"] = hashlib.sha256(temporary.read_bytes()).hexdigest()
+        temporary_list = Path(staging) / "shadowrocket.list"
+        with temporary_list.open("w", encoding="utf-8", newline="\n") as output:
+            output.writelines(shadowrocket_rules(merged))
+        stats["shadowrocket_bytes"] = temporary_list.stat().st_size
+        stats["shadowrocket_sha256"] = hashlib.sha256(temporary_list.read_bytes()).hexdigest()
+        pending.append((temporary_list, args.output.with_suffix(".list")))
         temporary_stats = Path(staging) / "stats.json"
         temporary_stats.write_text(json.dumps(stats, ensure_ascii=False, indent=2), encoding="utf-8")
         pending.append((temporary_stats, args.output.with_suffix(".stats.json")))

@@ -12,11 +12,11 @@ def main():
     previous_file = Path("previous/stats.json")
     if previous_file.exists():
         previous = json.loads(previous_file.read_text())
-        if all(stats[key] == previous.get(key) for key in ["mrs_sha256", "yaml_sha256"]):
+        if all(stats[key] == previous.get(key) for key in ["mrs_sha256", "yaml_sha256", "shadowrocket_sha256"]):
             print("Rules unchanged; keeping the current release.")
             return
     Path("build/stats.json").write_text(json.dumps(stats, ensure_ascii=False, indent=2) + "\n")
-    assets = [Path("build/ads.mrs"), Path("build/ads.yaml"), Path("build/stats.json")]
+    assets = [Path("build/ads.mrs"), Path("build/ads.yaml"), Path("build/ads.list"), Path("build/stats.json")]
     checksums = "".join(hashlib.sha256(path.read_bytes()).hexdigest() + "  " + path.name + "\n" for path in assets)
     Path("build/SHA256SUMS").write_text(checksums)
     assets.append(Path("build/SHA256SUMS"))
